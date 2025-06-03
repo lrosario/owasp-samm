@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OWASP SAMM - Avaliação de Maturidade de Segurança - Vale Saúde</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .intro-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .form-section {
+            background: white;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: #34495e;
+            color: white;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .section-intro {
+            background: #ecf0f1;
+            padding: 20px;
+            border-left: 5px solid #3498db;
+            margin-bottom: 20px;
+        }
+        
+        .section-content {
+            padding: 25px;
+        }
+        
+        .practice-group {
+            margin-bottom: 40px;
+            border: 2px solid #e8f4f8;
+            border-radius: 10px;
+            padding: 25px;
+            background: #fafcfd;
+        }
+        
+        .practice-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .practice-description {
+            font-size: 1em;
+            color: #555;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .maturity-levels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .maturity-level {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .maturity-level:hover {
+            border-color: #3498db;
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .maturity-level.selected {
+            border-color: #3498db;
+            background-color: #e3f2fd;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+        }
+        
+        .level-number {
+            font-weight: bold;
+            font-size: 1.4em;
+            color: #3498db;
+            margin-bottom: 8px;
+        }
+        
+        .level-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+        
+        .level-description {
+            font-size: 0.95em;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .level-examples {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .submit-btn, .export-btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #229954, #27ae60);
+        }
+        
+        .export-btn {
+            background: linear-gradient(135deg, #e67e22, #f39c12);
+            color: white;
+        }
+        
+        .export-btn:hover {
+            background: linear-gradient(135deg, #d35400, #e67e22);
+        }
+        
+        .export-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .results {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .score-display {
+            text-align: center;
+            font-size: 2em;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .tip {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .progress-indicator {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #bdc3c7;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>OWASP SAMM - Avaliação de Maturidade de Segurança</h1>
+            <p>Vale Saúde - Mapeamento de Maturidade das Squads</p>
+        </div>
+        
+        <div class="intro-section">
+            <h2>📋 Sobre esta Avaliação</h2>
+            <p><strong>O que é o OWASP SAMM?</strong></p>
+            <p>O SAMM (Software Assurance Maturity Model) é um framework criado pela OWASP para avaliar e melhorar a segurança no desenvolvimento de software. Ele nos ajuda a entender onde estamos e para onde devemos ir em termos de segurança.</p>
+            
+            <div class="highlight">
+                <strong>🎯 Objetivo desta avaliação:</strong><br>
+                Mapear o nível atual de maturidade de segurança da sua squad para identificar oportunidades de melhoria e criar um plano de evolução.
+            </div>
+            
+            <div class="tip">
+                <strong>💡 Como responder:</strong><br>
+                Para cada prática de segurança, selecione o nível que melhor representa a situação atual da sua squad. Seja honesto - não há respostas certas ou erradas, apenas a realidade atual que nos ajudará a evoluir.
+            </div>
+            
+            <p><strong>Estrutura da Avaliação:</strong></p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><strong>Governança:</strong> Como organizamos e gerenciamos a segurança</li>
+                <li><strong>Projeto:</strong> Como planejamos a segurança desde o início</li>
+                <li><strong>Implementação:</strong> Como construímos e entregamos software seguro</li>
+                <li><strong>Verificação:</strong> Como testamos e validamos a segurança</li>
+                <li><strong>Operações:</strong> Como mantemos a segurança em produção</li>
+            </ul>
+        </div>
+        
+        <div class="progress-indicator">
+            <div><strong>Progresso da Avaliação</strong></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div id="progressText">0% completo (0 de 15 práticas avaliadas)</div>
+        </div>
+        
+        <form id="sammForm">
+            <div class="form-section">
+                <div class="section-header">📝 Informações da Squad</div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label for="squadName">Nome da Squad:</label>
+                        <input type="text" id="squadName" name="squadName" required placeholder="Ex: Squad Pagamentos, Squad Mobile...">
+                    </div>
+                    <div class="form-group">
+                        <label for="evaluator">Nome do Avaliador:</label>
+                        <input type="text" id="evaluator" name="evaluator" required placeholder="Seu nome completo">
+                    </div>
+                    <div class="form-group">
+                        <label for="evaluationDate">Data da Avaliação:</label>
+                        <input type="date" id="evaluationDate" name="evaluationDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="squadSize">Tamanho da Squad:</label>
+                        <select id="squadSize" name="squadSize" required>
+                            <option value="">Selecione...</option>
+                            <option value="1-3">1-3 pessoas</option>
+                            <option value="4-6">4-6 pessoas</option>
+                            <option value="7-10">7-10 pessoas</option>
+                            <option value="10+">Mais de 10 pessoas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="additionalComments">Comentários Adicionais (opcional):</label>
+                        <textarea id="additionalComments" name="additionalComments" rows="3" placeholder="Alguma informação adicional sobre a squad ou contexto específico..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section" data-business-function="Governança">
+                <div class="section-header">🏛️ GOVERNANÇA - Como Organizamos a Segurança</div>
+                <div class="section-intro">
+                    <strong>O que é Governança em Segurança?</strong><br>
+                    É como sua squad organiza, planeja e gerencia as atividades de segurança. Inclui ter uma estratégia clara, políticas definidas e pessoas treinadas.
+                </div>
+                <div class="section-content">
+                    
+                    <div class="practice-group">
+                        <div class="practice-title">📊 Estratégia e Métricas de Segurança</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Ter um plano claro sobre como a segurança será tratada no seu projeto e como medir se está funcionando.<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Definir objetivos de segurança para o projeto</li>
+                                <li>Acompanhar métricas como número de vulnerabilidades encontradas</li>
+                                <li>Ter metas claras de segurança para cada sprint/release</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="SM">
+                            <div class="maturity-level" data-practice="sm" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Não temos estratégia</div>
+                                <div class="level-description">Não temos um plano formal de segurança. Tratamos segurança apenas quando surge algum problema.</div>
+                                <div class="level-examples">Ex: "Fazemos segurança quando dá tempo" ou "Nunca discutimos segurança nas reuniões"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sm" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Estratégia básica</div>
+                                <div class="level-description">Temos algumas ideias sobre segurança, mas não está bem documentado. Às vezes medimos algumas coisas.</div>
+                                <div class="level-examples">Ex: "Sabemos que precisamos pensar em segurança" ou "Às vezes contamos quantos bugs de segurança tivemos"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sm" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Estratégia documentada</div>
+                                <div class="level-description">Temos um plano de segurança escrito e acompanhamos métricas regularmente em nossas reuniões.</div>
+                                <div class="level-examples">Ex: "Temos um documento com nossos objetivos de segurança" ou "Revisamos métricas de segurança toda semana"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sm" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Estratégia avançada</div>
+                                <div class="level-description">Nossa estratégia de segurança está alinhada com os objetivos do negócio e temos dashboards automáticos com métricas.</div>
+                                <div class="level-examples">Ex: "Nossos objetivos de segurança estão conectados com as metas da empresa" ou "Temos dashboards que mostram nossa situação de segurança em tempo real"</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-group">
+                        <div class="practice-title">📋 Políticas e Conformidade</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Ter regras claras sobre como desenvolver software seguro e garantir que estamos seguindo regulamentações.<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Ter regras sobre como armazenar senhas</li>
+                                <li>Definir padrões de codificação segura</li>
+                                <li>Garantir conformidade com LGPD, PCI-DSS, etc.</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="PC">
+                            <div class="maturity-level" data-practice="pc" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Sem políticas formais</div>
+                                <div class="level-description">Não temos regras escritas sobre segurança. Cada pessoa faz do seu jeito.</div>
+                                <div class="level-examples">Ex: "Cada desenvolvedor decide como fazer" ou "Não sabemos quais regulamentações precisamos seguir"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="pc" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Políticas básicas</div>
+                                <div class="level-description">Temos algumas regras básicas, mas nem sempre são seguidas. Reagimos quando há problemas de conformidade.</div>
+                                <div class="level-examples">Ex: "Temos algumas regras, mas nem todo mundo conhece" ou "Só pensamos em conformidade quando alguém pergunta"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="pc" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Políticas estruturadas</div>
+                                <div class="level-description">Temos políticas abrangentes que todos conhecem e seguem. Fazemos auditorias regulares.</div>
+                                <div class="level-examples">Ex: "Todos da squad conhecem nossas regras de segurança" ou "Fazemos revisões regulares para garantir conformidade"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="pc" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Políticas dinâmicas</div>
+                                <div class="level-description">Nossas políticas se adaptam automaticamente a mudanças. Conformidade é verificada automaticamente.</div>
+                                <div class="level-examples">Ex: "Nossas ferramentas verificam automaticamente se estamos seguindo as regras" ou "Políticas se atualizam conforme mudanças nas regulamentações"</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-group">
+                        <div class="practice-title">🎓 Educação e Treinamento em Segurança</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Garantir que todos na squad tenham conhecimento necessário sobre segurança para fazer seu trabalho bem.<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Treinamentos sobre desenvolvimento seguro</li>
+                                <li>Workshops sobre principais vulnerabilidades</li>
+                                <li>Materiais de consulta sempre disponíveis</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="EG">
+                            <div class="maturity-level" data-practice="eg" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Sem treinamento formal</div>
+                                <div class="level-description">Não temos treinamentos específicos sobre segurança. Cada um aprende por conta própria.</div>
+                                <div class="level-examples">Ex: "Nunca fizemos treinamento de segurança" ou "Aprendemos segurança apenas quando surge problema"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="eg" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Treinamento básico</div>
+                                <div class="level-description">Fazemos alguns treinamentos ocasionais e temos orientações pontuais quando necessário.</div>
+                                <div class="level-examples">Ex: "Já fizemos algumas palestras sobre segurança" ou "Às vezes alguém explica sobre uma vulnerabilidade específica"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="eg" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Programa estruturado</div>
+                                <div class="level-description">Temos um programa regular de treinamento com conteúdo específico para cada função na squad.</div>
+                                <div class="level-examples">Ex: "Desenvolvedores têm treinamento específico, QAs têm outro" ou "Fazemos treinamentos mensais sobre temas diferentes"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="eg" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Educação contínua</div>
+                                <div class="level-description">Segurança faz parte da cultura da squad. Aprendizado contínuo com gamificação e reconhecimento.</div>
+                                <div class="level-examples">Ex: "Todos falam de segurança naturalmente" ou "Temos competições internas sobre segurança"</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section" data-business-function="Projeto">
+                <div class="section-header">🎨 PROJETO - Como Planejamos a Segurança</div>
+                <div class="section-intro">
+                    <strong>O que é Projeto em Segurança?</strong><br>
+                    É pensar na segurança desde o início, antes mesmo de começar a programar. Inclui entender as ameaças, definir requisitos de segurança e planejar uma arquitetura segura.
+                </div>
+                <div class="section-content">
+                    
+                    <div class="practice-group">
+                        <div class="practice-title">🎯 Análise de Ameaças</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Identificar quais são os possíveis ataques que seu sistema pode sofrer e se preparar para eles.<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Listar quem pode querer atacar seu sistema</li>
+                                <li>Identificar pontos fracos na sua aplicação</li>
+                                <li>Fazer threat modeling (mapeamento de ameaças)</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="TA">
+                            <div class="maturity-level" data-practice="ta" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Não analisamos ameaças</div>
+                                <div class="level-description">Não pensamos formalmente sobre quem pode atacar nosso sistema ou como.</div>
+                                <div class="level-examples">Ex: "Nunca fizemos uma lista de possíveis ataques" ou "Não sabemos quais são nossas vulnerabilidades"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="ta" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Análise básica</div>
+                                <div class="level-description">Às vezes pensamos sobre possíveis ataques, mas não de forma sistemática.</div>
+                                <div class="level-examples">Ex: "Já conversamos sobre alguns riscos" ou "Sabemos que precisamos nos proteger de hackers"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="ta" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Análise estruturada</div>
+                                <div class="level-description">Fazemos threat modeling regularmente e documentamos as ameaças identificadas.</div>
+                                <div class="level-examples">Ex: "Temos diagramas mostrando possíveis ataques" ou "Revisamos ameaças a cada nova funcionalidade"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="ta" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Análise avançada</div>
+                                <div class="level-description">Usamos threat intelligence e ferramentas automatizadas para identificar novas ameaças constantemente.</div>
+                                <div class="level-examples">Ex: "Recebemos alertas automáticos sobre novas ameaças" ou "Nossas ferramentas sugerem proteções baseadas em ataques recentes"</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="practice-group">
+                        <div class="practice-title">📝 Requisitos de Segurança</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Definir claramente o que o sistema precisa ter para ser seguro, assim como definimos outros requisitos funcionais.<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Definir que senhas devem ter pelo menos 8 caracteres</li>
+                                <li>Especificar que dados sensíveis devem ser criptografados</li>
+                                <li>Exigir autenticação em duas etapas para admins</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="SR">
+                            <div class="maturity-level" data-practice="sr" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Sem requisitos formais</div>
+                                <div class="level-description">Não definimos requisitos específicos de segurança. Implementamos segurança "na medida do possível".</div>
+                                <div class="level-examples">Ex: "Fazemos o que achamos que é seguro" ou "Não temos uma lista do que precisa ser protegido"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sr" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Requisitos básicos</div>
+                                <div class="level-description">Temos algumas regras básicas de segurança, mas não estão bem documentadas.</div>
+                                <div class="level-examples">Ex: "Sabemos que precisamos de login" ou "Temos algumas regras não escritas sobre segurança"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sr" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Requisitos estruturados</div>
+                                <div class="level-description">Temos requisitos de segurança bem documentados e conseguimos rastrear se foram implementados.</div>
+                                <div class="level-examples">Ex: "Cada história tem seus requisitos de segurança" ou "Conseguimos verificar se todos os requisitos foram atendidos"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sr" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Requisitos dinâmicos</div>
+                                <div class="level-description">Nossos requisitos se adaptam automaticamente a mudanças e são validados automaticamente.</div>
+                                <div class="level-examples">Ex: "Nossos requisitos são verificados automaticamente durante o desenvolvimento" ou "Temos uma base de conhecimento de requisitos que se atualiza"</div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="practice-group">
+                        <div class="practice-title">🛡️ Arquitetura de Segurança</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Projetar o sistema de forma que ele seja seguro por padrão, considerando como os componentes se conectam e se protegem.<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Usar HTTPS em todas as comunicações</li>
+                                <li>Isolar componentes críticos do sistema</li>
+                                <li>Planejar como lidar com falhas de segurança</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="SA">
+                            <div class="maturity-level" data-practice="sa" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Sem planejamento arquitetural</div>
+                                <div class="level-description">Não planejamos a arquitetura com foco em segurança. Adicionamos segurança depois, se necessário.</div>
+                                <div class="level-examples">Ex: "Construímos primeiro, pensamos em segurança depois" ou "Não temos um diagrama de arquitetura com segurança"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sa" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Arquitetura básica</div>
+                                <div class="level-description">Temos algumas ideias sobre arquitetura segura, mas não são formalizadas ou revisadas.</div>
+                                <div class="level-examples">Ex: "Sabemos que precisamos de um firewall" ou "Às vezes discutimos como proteger os dados"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sa" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Arquitetura documentada</div>
+                                <div class="level-description">Temos uma arquitetura de segurança documentada e a revisamos periodicamente.</div>
+                                <div class="level-examples">Ex: "Nosso diagrama de arquitetura inclui componentes de segurança" ou "Revisamos a arquitetura a cada grande mudança"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sa" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Arquitetura resiliente</div>
+                                <div class="level-description">Nossa arquitetura é projetada para resistir a ataques e se recuperar rapidamente. Usamos padrões de segurança comprovados.</div>
+                                <div class="level-examples">Ex: "Nossa arquitetura se adapta automaticamente a novas ameaças" ou "Usamos princípios de 'defesa em profundidade'"</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section" data-business-function="Implementação">
+                <div class="section-header">💻 IMPLEMENTAÇÃO - Como Construímos Software Seguro</div>
+                <div class="section-intro">
+                    <strong>O que é Implementação em Segurança?</strong><br>
+                    É garantir que o código que escrevemos seja seguro e que não introduzamos novas vulnerabilidades. Inclui usar ferramentas seguras e seguir boas práticas de desenvolvimento.
+                </div>
+                <div class="section-content">
+                    <div class="practice-group">
+                        <div class="practice-title">🛠️ Build Seguro</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Garantir que o processo de compilação e empacotamento do software seja seguro e não introduza vulnerabilidades.<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Verificar dependências de software para vulnerabilidades conhecidas (SCA)</li>
+                                <li>Assinar digitalmente os artefatos de build</li>
+                                <li>Automatizar o processo de build em um ambiente seguro</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="SB">
+                            <div class="maturity-level" data-practice="sb" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Build manual e inseguro</div>
+                                <div class="level-description">Nosso processo de build é manual e não consideramos aspectos de segurança.</div>
+                                <div class="level-examples">Ex: "Compilamos na nossa máquina" ou "Não verificamos as bibliotecas que usamos"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sb" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Build básico automatizado</div>
+                                <div class="level-description">Temos alguma automação no build, mas com poucas verificações de segurança.</div>
+                                <div class="level-examples">Ex: "Usamos um script para compilar" ou "Às vezes olhamos as dependências"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sb" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Build seguro e repetível</div>
+                                <div class="level-description">Nosso processo de build é automatizado, seguro e inclui verificação de dependências.</div>
+                                <div class="level-examples">Ex: "Nosso CI/CD verifica vulnerabilidades nas dependências" ou "O build sempre acontece da mesma forma segura"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sb" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Build otimizado e proativo</div>
+                                <div class="level-description">O processo de build é altamente otimizado, com feedback rápido sobre segurança e prevenção proativa de riscos.</div>
+                                <div class="level-examples">Ex: "Recebemos alertas imediatos sobre dependências vulneráveis" ou "O build impede o uso de componentes inseguros"</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="practice-group">
+                        <div class="practice-title">🚀 Deploy Seguro</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Garantir que o processo de implantação do software em produção seja seguro e controlado.<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Automatizar o deploy com aprovações necessárias</li>
+                                <li>Gerenciar segredos (senhas, chaves de API) de forma segura</li>
+                                <li>Ter um plano de rollback em caso de problemas</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="SD">
+                            <div class="maturity-level" data-practice="sd" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Deploy manual e arriscado</div>
+                                <div class="level-description">Fazemos deploy manualmente, sem muitos controles de segurança.</div>
+                                <div class="level-examples">Ex: "Copiamos os arquivos para o servidor" ou "Não temos um processo formal de deploy"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sd" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Deploy básico automatizado</div>
+                                <div class="level-description">Temos alguma automação no deploy, mas com gerenciamento de segredos básico.</div>
+                                <div class="level-examples">Ex: "Usamos scripts para deploy" ou "As senhas ficam em arquivos de configuração"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sd" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Deploy seguro e controlado</div>
+                                <div class="level-description">Nosso deploy é automatizado, com gerenciamento seguro de segredos e trilhas de auditoria.</div>
+                                <div class="level-examples">Ex: "Usamos um cofre de segredos" ou "Todo deploy precisa de aprovação e é registrado"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="sd" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Deploy otimizado e resiliente</div>
+                                <div class="level-description">O deploy é totalmente automatizado, com capacidade de rollback instantâneo e monitoramento contínuo da segurança pós-deploy.</div>
+                                <div class="level-examples">Ex: "Conseguimos reverter um deploy problemático em segundos" ou "Monitoramos ativamente a segurança após cada deploy"</div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="practice-group">
+                        <div class="practice-title">🔑 Gerenciamento de Defeitos</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Como identificamos, rastreamos e corrigimos falhas de segurança (bugs) no nosso software.<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Registrar todas as vulnerabilidades encontradas</li>
+                                <li>Priorizar a correção de falhas de segurança</li>
+                                <li>Analisar a causa raiz das vulnerabilidades</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="DM">
+                            <div class="maturity-level" data-practice="dm" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Sem gerenciamento formal</div>
+                                <div class="level-description">Não rastreamos formalmente as falhas de segurança. Corrigimos quando aparecem.</div>
+                                <div class="level-examples">Ex: "Corrigimos bugs de segurança quando alguém reclama" ou "Não temos uma lista de vulnerabilidades conhecidas"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="dm" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Gerenciamento básico</div>
+                                <div class="level-description">Registramos algumas falhas de segurança, mas sem um processo claro de priorização.</div>
+                                <div class="level-examples">Ex: "Anotamos os bugs de segurança em algum lugar" ou "Tentamos corrigir os mais óbvios primeiro"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="dm" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Gerenciamento estruturado</div>
+                                <div class="level-description">Temos um processo formal para rastrear, priorizar e corrigir todas as falhas de segurança.</div>
+                                <div class="level-examples">Ex: "Todas as vulnerabilidades são registradas no Jira" ou "Temos SLAs para correção de falhas críticas"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="dm" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Gerenciamento proativo</div>
+                                <div class="level-description">Analisamos tendências de vulnerabilidades, aprendemos com os erros e focamos na prevenção.</div>
+                                <div class="level-examples">Ex: "Analisamos por que certas vulnerabilidades acontecem e treinamos a equipe" ou "Usamos dados para prever e evitar futuras falhas"</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section" data-business-function="Verificação">
+                <div class="section-header">🔍 VERIFICAÇÃO - Como Testamos a Segurança</div>
+                <div class="section-intro">
+                    <strong>O que é Verificação em Segurança?</strong><br>
+                    É garantir que o software que construímos é realmente seguro através de testes e revisões. Inclui testes automatizados, revisões de código e testes de invasão.
+                </div>
+                <div class="section-content">
+                    <div class="practice-group">
+                        <div class="practice-title">📋 Revisão de Requisitos de Segurança</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Verificar se os requisitos de segurança definidos no início foram realmente implementados e estão funcionando.<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Testar se a senha realmente exige 8 caracteres</li>
+                                <li>Verificar se os dados sensíveis estão criptografados</li>
+                                <li>Confirmar que a autenticação em duas etapas funciona</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="SRV"> <div class="maturity-level" data-practice="srv" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Não revisamos requisitos</div>
+                                <div class="level-description">Não verificamos formalmente se os requisitos de segurança foram implementados.</div>
+                                <div class="level-examples">Ex: "Assumimos que foi feito certo" ou "Não temos testes específicos para segurança"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="srv" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Revisão básica</div>
+                                <div class="level-description">Verificamos alguns requisitos de segurança manualmente e de forma ad-hoc.</div>
+                                <div class="level-examples">Ex: "Testamos o login manualmente" ou "Às vezes verificamos se algo está criptografado"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="srv" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Revisão estruturada</div>
+                                <div class="level-description">Temos um processo para testar todos os requisitos de segurança e documentar os resultados.</div>
+                                <div class="level-examples">Ex: "Temos casos de teste para cada requisito de segurança" ou "Geramos relatórios de conformidade dos requisitos"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="srv" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Revisão automatizada</div>
+                                <div class="level-description">A verificação dos requisitos de segurança é automatizada e integrada ao ciclo de desenvolvimento.</div>
+                                <div class="level-examples">Ex: "Nossos testes automatizados cobrem todos os requisitos de segurança" ou "Recebemos alertas se um requisito de segurança não for atendido"</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="practice-group">
+                        <div class="practice-title">💻 Testes de Segurança</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Realizar diferentes tipos de testes para encontrar vulnerabilidades no software (SAST, DAST, Pentest).<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Usar ferramentas para analisar o código em busca de falhas (SAST)</li>
+                                <li>Testar a aplicação em execução para encontrar vulnerabilidades (DAST)</li>
+                                <li>Contratar especialistas para tentar invadir o sistema (Pentest)</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="ST">
+                            <div class="maturity-level" data-practice="st" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Não fazemos testes de segurança</div>
+                                <div class="level-description">Não realizamos testes específicos para encontrar vulnerabilidades.</div>
+                                <div class="level-examples">Ex: "Confiamos que o código é seguro" ou "Só testamos a funcionalidade"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="st" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Testes básicos e manuais</div>
+                                <div class="level-description">Fazemos alguns testes de segurança manuais e usamos ferramentas simples ocasionalmente.</div>
+                                <div class="level-examples">Ex: "Tentamos alguns ataques simples" ou "Rodamos um scanner de vez em quando"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="st" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Testes estruturados</div>
+                                <div class="level-description">Realizamos testes SAST e DAST regularmente e fazemos pentests planejados.</div>
+                                <div class="level-examples">Ex: "Temos SAST no CI/CD" ou "Fazemos pentest uma vez por ano"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="st" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Testes contínuos e avançados</div>
+                                <div class="level-description">Os testes de segurança são contínuos, automatizados e usam técnicas avançadas (IAST, RASP). Pentests são frequentes e baseados em risco.</div>
+                                <div class="level-examples">Ex: "Nossas ferramentas de teste aprendem com ataques reais" ou "Fazemos pentests em todas as grandes releases"</div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="practice-group">
+                        <div class="practice-title">👨‍💻 Revisão de Código Seguro</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Outros desenvolvedores revisam o código em busca de falhas de segurança antes que ele vá para produção.<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Ter checklists de segurança para revisões de código</li>
+                                <li>Garantir que pelo menos duas pessoas revisem o código</li>
+                                <li>Focar em vulnerabilidades comuns (OWASP Top 10) durante a revisão</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="SCR">
+                            <div class="maturity-level" data-practice="scr" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Sem revisão de código</div>
+                                <div class="level-description">Não fazemos revisão de código com foco em segurança.</div>
+                                <div class="level-examples">Ex: "Cada um sobe seu código direto" ou "Revisamos apenas a lógica de negócio"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="scr" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Revisão informal</div>
+                                <div class="level-description">Às vezes pedimos para um colega dar uma olhada no código, mas sem foco específico em segurança.</div>
+                                <div class="level-examples">Ex: "Alguém dá uma olhada rápida no pull request" ou "Comentamos sobre segurança se algo parecer muito errado"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="scr" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Revisão estruturada</div>
+                                <div class="level-description">Temos um processo formal de revisão de código que inclui verificações de segurança.</div>
+                                <div class="level-examples">Ex: "Usamos um checklist de segurança para code review" ou "Pelo menos um revisor foca em segurança"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="scr" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Revisão assistida por ferramentas</div>
+                                <div class="level-description">Usamos ferramentas para auxiliar na revisão de código, identificando automaticamente possíveis falhas de segurança. A cultura de segurança é forte.</div>
+                                <div class="level-examples">Ex: "Nossa ferramenta de code review sugere correções de segurança" ou "Todos na squad são capazes de identificar falhas de segurança no código"</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section" data-business-function="Operações">
+                <div class="section-header">⚙️ OPERAÇÕES - Como Mantemos a Segurança em Produção</div>
+                <div class="section-intro">
+                    <strong>O que é Operações em Segurança?</strong><br>
+                    É garantir que o software continue seguro depois de implantado. Inclui monitorar incidentes, gerenciar vulnerabilidades e responder a ataques.
+                </div>
+                <div class="section-content">
+                    <div class="practice-group">
+                        <div class="practice-title">🛡️ Gerenciamento de Incidentes</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Ter um plano para detectar, responder e se recuperar de incidentes de segurança (ataques, vazamentos de dados).<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Ter um time de resposta a incidentes</li>
+                                <li>Definir como comunicar um incidente</li>
+                                <li>Fazer simulações de incidentes para treinar a equipe</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="IM">
+                            <div class="maturity-level" data-practice="im" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Sem plano de incidentes</div>
+                                <div class="level-description">Não temos um plano formal para lidar com incidentes de segurança. Improvisamos quando algo acontece.</div>
+                                <div class="level-examples">Ex: "Se formos hackeados, a gente vê o que faz na hora" ou "Não sabemos quem contatar em caso de ataque"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="im" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Plano básico</div>
+                                <div class="level-description">Temos algumas ideias sobre como responder a incidentes, mas não é bem documentado ou testado.</div>
+                                <div class="level-examples">Ex: "Sabemos que precisamos desligar o servidor" ou "Temos um contato de emergência"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="im" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Plano documentado e testado</div>
+                                <div class="level-description">Temos um plano de resposta a incidentes documentado, com papéis e responsabilidades definidos, e o testamos regularmente.</div>
+                                <div class="level-examples">Ex: "Temos um playbook de resposta a incidentes" ou "Fazemos simulações de ataque todo semestre"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="im" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Resposta automatizada e adaptativa</div>
+                                <div class="level-description">Usamos ferramentas para detectar e responder automaticamente a incidentes. Aprendemos com cada incidente para melhorar o plano.</div>
+                                <div class="level-examples">Ex: "Nosso sistema bloqueia automaticamente atividades suspeitas" ou "Analisamos cada incidente para evitar que aconteça de novo"</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="practice-group">
+                        <div class="practice-title">🌐 Gerenciamento de Configurações de Segurança</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Garantir que todos os sistemas e aplicações estejam configurados de forma segura e que essas configurações sejam mantidas.<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Ter padrões de configuração segura para servidores e bancos de dados</li>
+                                <li>Monitorar desvios das configurações seguras</li>
+                                <li>Automatizar a aplicação de configurações seguras</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="SCM">
+                            <div class="maturity-level" data-practice="scm" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Sem gerenciamento de configurações</div>
+                                <div class="level-description">Não temos um processo para garantir configurações seguras. Cada sistema é configurado de um jeito.</div>
+                                <div class="level-examples">Ex: "Usamos as configurações padrão" ou "Não verificamos se as configurações estão seguras"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="scm" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Configurações básicas</div>
+                                <div class="level-description">Temos algumas configurações de segurança básicas, mas não são monitoradas ou aplicadas consistentemente.</div>
+                                <div class="level-examples">Ex: "Mudamos algumas senhas padrão" ou "Às vezes verificamos as configurações"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="scm" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Configurações padronizadas</div>
+                                <div class="level-description">Temos padrões de configuração segura documentados e os aplicamos consistentemente. Monitoramos desvios.</div>
+                                <div class="level-examples">Ex: "Todos os servidores novos seguem nosso padrão de segurança" ou "Recebemos alertas se uma configuração for alterada indevidamente"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="scm" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Gerenciamento automatizado</div>
+                                <div class="level-description">A aplicação e monitoramento de configurações seguras são totalmente automatizados (Infraestrutura como Código).</div>
+                                <div class="level-examples">Ex: "Nossas ferramentas garantem que todas as configurações estejam sempre corretas" ou "Configurações inseguras são revertidas automaticamente"</div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="practice-group">
+                        <div class="practice-title">🐛 Gerenciamento de Vulnerabilidades</div>
+                        <div class="practice-description">
+                            <strong>O que significa:</strong> Identificar, avaliar e corrigir continuamente vulnerabilidades em sistemas em produção.<br><br>
+                            <strong>Exemplos práticos:</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>Rodar scanners de vulnerabilidade regularmente</li>
+                                <li>Priorizar a correção de vulnerabilidades críticas</li>
+                                <li>Acompanhar o tempo para corrigir vulnerabilidades</li>
+                            </ul>
+                        </div>
+                        <div class="maturity-levels" data-practice-code="VM">
+                            <div class="maturity-level" data-practice="vm" data-level="0">
+                                <div class="level-number">Nível 0</div>
+                                <div class="level-title">Sem gerenciamento de vulnerabilidades</div>
+                                <div class="level-description">Não procuramos ativamente por vulnerabilidades em produção. Corrigimos apenas se encontradas por acaso.</div>
+                                <div class="level-examples">Ex: "Não rodamos scanners" ou "Só corrigimos se um cliente reportar"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="vm" data-level="1">
+                                <div class="level-number">Nível 1</div>
+                                <div class="level-title">Gerenciamento reativo</div>
+                                <div class="level-description">Rodamos scanners de vulnerabilidade ocasionalmente e corrigimos as mais óbvias.</div>
+                                <div class="level-examples">Ex: "Rodamos um scanner uma vez por ano" ou "Corrigimos as vulnerabilidades críticas quando dá tempo"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="vm" data-level="2">
+                                <div class="level-number">Nível 2</div>
+                                <div class="level-title">Gerenciamento estruturado</div>
+                                <div class="level-description">Temos um programa regular de varredura de vulnerabilidades, com priorização e SLAs para correção.</div>
+                                <div class="level-examples">Ex: "Rodamos scanners toda semana e temos um plano para corrigir tudo" ou "Vulnerabilidades críticas são corrigidas em 48 horas"</div>
+                            </div>
+                            <div class="maturity-level" data-practice="vm" data-level="3">
+                                <div class="level-number">Nível 3</div>
+                                <div class="level-title">Gerenciamento proativo e preditivo</div>
+                                <div class="level-description">Usamos inteligência de ameaças para prever vulnerabilidades e temos processos automatizados para correção rápida.</div>
+                                <div class="level-examples">Ex: "Nossas ferramentas nos alertam sobre novas vulnerabilidades antes mesmo de rodarmos scanners" ou "Muitas vulnerabilidades são corrigidas automaticamente"</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="submit-btn" id="submitEvaluationBtn">Submeter Avaliação (Calcular Pontuação - Placeholder)</button>
+                <button type="button" class="export-btn" id="exportCsvBtn" disabled>Exportar para CSV</button>
+            </div>
+        </form>
+
+        <div class="results" id="resultsSection" style="display:none;">
+            <h2>Resultados da Avaliação</h2>
+            <div class="score-display" id="overallScore">Pontuação: N/A</div>
+            </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sammForm = document.getElementById('sammForm');
+            const maturityLevels = document.querySelectorAll('.maturity-level');
+            const exportCsvBtn = document.getElementById('exportCsvBtn');
+            const submitEvaluationBtn = document.getElementById('submitEvaluationBtn'); // Placeholder
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const evaluationDateInput = document.getElementById('evaluationDate');
+
+            // Set current date for evaluationDate input
+            if (evaluationDateInput) {
+                evaluationDateInput.valueAsDate = new Date();
+            }
+
+            const selectedScores = {}; // Stores { practiceCode: level }
+            const totalPractices = document.querySelectorAll('.practice-group').length; // Total number of practice groups
+
+            function updateProgress() {
+                const practicesAnswered = Object.keys(selectedScores).length;
+                const percentage = totalPractices > 0 ? (practicesAnswered / totalPractices) * 100 : 0;
+                
+                if (progressFill) {
+                    progressFill.style.width = percentage + '%';
+                }
+                if (progressText) {
+                    progressText.textContent = `${Math.round(percentage)}% completo (${practicesAnswered} de ${totalPractices} práticas avaliadas)`;
+                }
+
+                if (exportCsvBtn) {
+                    exportCsvBtn.disabled = practicesAnswered === 0;
+                }
+            }
+            
+            maturityLevels.forEach(level => {
+                level.addEventListener('click', function () {
+                    const practiceCode = this.closest('.maturity-levels').dataset.practiceCode; // Unique code for the practice group
+                    const currentLevel = parseInt(this.dataset.level);
+
+                    // Deselect other levels in the same practice group
+                    this.closest('.maturity-levels').querySelectorAll('.maturity-level').forEach(l => {
+                        l.classList.remove('selected');
+                    });
+                    
+                    // Select the clicked level
+                    this.classList.add('selected');
+                    selectedScores[practiceCode] = currentLevel;
+                    
+                    updateProgress();
+                });
+            });
+
+            // Function to escape CSV data, now considering semicolon as delimiter
+            function escapeCsvValue(value) {
+                if (value === null || typeof value === 'undefined') {
+                    return '';
+                }
+                let stringValue = String(value);
+                // If the value contains a semicolon (our delimiter), newline, or double quote, enclose it in double quotes
+                if (stringValue.includes(';') || stringValue.includes('\n') || stringValue.includes('"')) {
+                    // Escape existing double quotes by doubling them
+                    stringValue = stringValue.replace(/"/g, '""');
+                    return `"${stringValue}"`;
+                }
+                return stringValue;
+            }
+
+            if (exportCsvBtn) {
+                exportCsvBtn.addEventListener('click', function() {
+                    if (Object.keys(selectedScores).length === 0) {
+                        // Using a custom modal/alert if available, otherwise browser alert
+                        const customAlert = document.getElementById('customAlert');
+                        if (customAlert && typeof showAlertModal === 'function') {
+                            showAlertModal('Por favor, selecione o nível de maturidade para pelo menos uma prática antes de exportar.');
+                        } else {
+                            alert('Por favor, selecione o nível de maturidade para pelo menos uma prática antes de exportar.');
+                        }
+                        return;
+                    }
+
+                    const squadName = document.getElementById('squadName').value;
+                    const evaluator = document.getElementById('evaluator').value;
+                    const evaluationDate = document.getElementById('evaluationDate').value;
+                    const squadSize = document.getElementById('squadSize').value;
+                    const additionalComments = document.getElementById('additionalComments').value;
+
+                    if (!squadName || !evaluator || !evaluationDate || !squadSize) {
+                         // Using a custom modal/alert if available, otherwise browser alert
+                        const customAlert = document.getElementById('customAlert');
+                        if (customAlert && typeof showAlertModal === 'function') {
+                            showAlertModal('Por favor, preencha todas as informações da squad antes de exportar.');
+                        } else {
+                            alert('Por favor, preencha todas as informações da squad antes de exportar.');
+                        }
+                        return;
+                    }
+
+                    let csvContent = "data:text/csv;charset=utf-8,";
+                    const headers = [
+                        "Nome da Squad", "Nome do Avaliador", "Data da Avaliação", "Tamanho da Squad", "Comentários Adicionais",
+                        "Função de Negócios SAMM", "Prática de Segurança SAMM", "Código da Prática", "Nível Selecionado", 
+                        "Título do Nível", "Descrição do Nível"
+                    ];
+                    // Use semicolon as delimiter
+                    csvContent += headers.map(escapeCsvValue).join(";") + "\r\n"; 
+
+                    document.querySelectorAll('.practice-group').forEach(pg => {
+                        const practiceCodeForGroup = pg.querySelector('.maturity-levels').dataset.practiceCode;
+                        const selectedLevelDiv = pg.querySelector('.maturity-level.selected');
+
+                        const businessFunctionDiv = pg.closest('.form-section');
+                        const businessFunction = businessFunctionDiv ? businessFunctionDiv.dataset.businessFunction : 'N/A';
+                        const practiceTitle = pg.querySelector('.practice-title').textContent.trim();
+
+                        let selectedLevel = "N/A";
+                        let levelTitle = "Não Avaliado";
+                        let levelDescription = "Não Avaliado";
+
+                        if (selectedLevelDiv) {
+                            selectedLevel = selectedLevelDiv.dataset.level;
+                            levelTitle = selectedLevelDiv.querySelector('.level-title').textContent.trim();
+                            levelDescription = selectedLevelDiv.querySelector('.level-description').textContent.trim();
+                        }
+
+                        const row = [
+                            squadName, evaluator, evaluationDate, squadSize, additionalComments,
+                            businessFunction, practiceTitle, practiceCodeForGroup, selectedLevel,
+                            levelTitle, levelDescription
+                        ];
+                        // Use semicolon as delimiter
+                        csvContent += row.map(escapeCsvValue).join(";") + "\r\n";
+                    });
+
+                    const encodedUri = encodeURI(csvContent);
+                    const link = document.createElement("a");
+                    link.setAttribute("href", encodedUri);
+                    const timestamp = new Date().toISOString().replace(/[:\-.T]/g, '').slice(0, -4); // YYYYMMDDHHMMSS
+                    link.setAttribute("download", `Avaliacao_SAMM_${squadName.replace(/\s+/g, '_')}_${timestamp}.csv`);
+                    document.body.appendChild(link); 
+                    link.click();
+                    document.body.removeChild(link);
+                });
+            }
+
+            // Placeholder for submit button functionality
+            if (submitEvaluationBtn) {
+                submitEvaluationBtn.addEventListener('click', function() {
+                    const resultsSection = document.getElementById('resultsSection');
+                    const overallScoreDisplay = document.getElementById('overallScore');
+                    
+                    if (Object.keys(selectedScores).length === 0) {
+                        // Using a custom modal/alert if available, otherwise browser alert
+                        const customAlert = document.getElementById('customAlert');
+                        if (customAlert && typeof showAlertModal === 'function') {
+                            showAlertModal('Por favor, avalie ao menos uma prática antes de submeter.');
+                        } else {
+                            alert('Por favor, avalie ao menos uma prática antes de submeter.');
+                        }
+                        return;
+                    }
+
+                    let totalScore = 0;
+                    let answeredPracticesCount = 0;
+                    for (const practice in selectedScores) {
+                        totalScore += selectedScores[practice];
+                        answeredPracticesCount++;
+                    }
+                    // Calculate average only if there are answered practices to avoid division by zero
+                    const averageScore = answeredPracticesCount > 0 ? totalScore / answeredPracticesCount : 0;
+
+
+                    if (overallScoreDisplay) {
+                       overallScoreDisplay.textContent = `Pontuação Média: ${averageScore.toFixed(2)} (de ${answeredPracticesCount} práticas avaliadas)`;
+                    }
+                    if (resultsSection) {
+                        resultsSection.style.display = 'block';
+                        resultsSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                     // Using a custom modal/alert if available, otherwise browser alert
+                    const customAlert = document.getElementById('customAlert');
+                    if (customAlert && typeof showAlertModal === 'function') {
+                        showAlertModal('Funcionalidade de submissão e cálculo detalhado de pontuação ainda é um placeholder.');
+                    } else {
+                        alert('Funcionalidade de submissão e cálculo detalhado de pontuação ainda é um placeholder.');
+                    }
+                });
+            }
+            
+            // Initial progress update
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
